@@ -9,9 +9,15 @@ const ProductsOverviewScreen = () => {
     <FlatList
       data={products}
       keyExtractor={item => item.id}
-      renderItem={itemData => <Text>{itemData.item.name}</Text>}
+      renderItem={itemData => (
+        <Text style={{ color: "white" }}>{itemData.item.title}</Text>
+      )}
     />
   );
+};
+
+ProductsOverviewScreen.navigationOptions = {
+  headerTitle: "Products",
 };
 
 export default ProductsOverviewScreen;
