@@ -3,6 +3,7 @@ import { View, Image, Button, StyleSheet, ScrollView } from "react-native";
 import PlainText from "../../components/PlainText";
 
 import { useSelector } from "react-redux";
+import Colors from "../../constants/colors";
 
 const ProductDetailScreen = props => {
   const productId = props.navigation.getParam("productId");
@@ -11,11 +12,22 @@ const ProductDetailScreen = props => {
   );
 
   return (
-    <View>
-      <PlainText style={styles.text}>
-        {selectedProduct.title} {productId}
+    <ScrollView>
+      <Image style={styles.image} source={{ uri: selectedProduct.imageUrl }} />
+      <View style={styles.buttonContainer}>
+        <Button
+          color={Colors.lightBlue}
+          title="Add to card"
+          onPress={() => {}}
+        />
+      </View>
+      <PlainText style={styles.price}>
+        {selectedProduct.price.toFixed(2)}
       </PlainText>
-    </View>
+      <PlainText style={styles.description}>
+        {selectedProduct.description}
+      </PlainText>
+    </ScrollView>
   );
 };
 
@@ -28,6 +40,22 @@ ProductDetailScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
   text: {
     color: "white",
+  },
+  image: {
+    width: "100%",
+    height: 300,
+  },
+  price: {
+    fontSize: 20,
+    color: Colors.blue,
+    textAlign: "center",
+    marginVertical: 20,
+  },
+  description: {
+    fontSize: 14,
+    textAlign: "center",
+    color: "white",
+    marginHorizontal: 20,
   },
 });
 
