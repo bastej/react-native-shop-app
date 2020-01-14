@@ -1,5 +1,5 @@
 import { ADD_TO_CART } from "../actions/cart";
-
+import CartItem from "../../models/cart-item";
 const initialState = {
   items: {},
   totalAmount: 0,
@@ -18,6 +18,7 @@ const reducer = (state = initialState, action) => {
       if (state.items[productId]) {
         const existingProduct = state.items[productId];
         currentProduct = new CartItem(
+          productId,
           existingProduct.quantity + 1,
           productPrice,
           productTitle,

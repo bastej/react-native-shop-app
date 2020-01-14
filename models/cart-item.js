@@ -7,3 +7,5 @@ class CartItem {
     this.sum = sum;
   }
 }
+
+export default CartItem;
