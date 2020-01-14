@@ -6,10 +6,11 @@ import * as Font from "expo-font";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 import rootReducer from "./store/reducers";
+import { composeWithDevTools } from "redux-devtools-extension";
 
 import ShopNavigator from "./navigation/ShopNavigator";
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, composeWithDevTools());
 
 const fetchFonts = () => {
   return Font.loadAsync({
