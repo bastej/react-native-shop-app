@@ -45,6 +45,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 300,
   },
+  buttonContainer: {
+    marginVertical: 20,
+    alignItems: "center",
+  },
   price: {
     fontSize: 20,
     color: Colors.blue,
