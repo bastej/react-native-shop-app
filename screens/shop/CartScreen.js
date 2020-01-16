@@ -3,19 +3,24 @@ import React from "react";
 import map from "lodash/map";
 
 import { View, FlatList, Button, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import PlainText from "../../components/PlainText";
 import Colors from "../../constants/colors";
 import CartItem from "../../components/shop/CartItem";
+import * as cartActions from "../../store/actions/cart";
 
 const CartScreen = props => {
   const cartTotalAmount = useSelector(state => state.cart.totalAmount);
   const cartItems = useSelector(state => {
     // transforming into array with lodash
-    const itemsArray = map(state.cart.items, item => item);
+    const itemsArray = map(state.cart.items, item => item).sort(
+      (a, b) => a.key > b.key
+    );
     return itemsArray;
   });
+
+  const dispatch = useDispatch();
 
   return (
     <View style={styles.screen}>
@@ -34,12 +39,14 @@ const CartScreen = props => {
       </View>
       <FlatList
         data={cartItems}
-        renderItem={({ item: { quantity, productTitle, sum } }) => (
+        renderItem={({ item: { key, quantity, productTitle, sum } }) => (
           <CartItem
             title={productTitle}
             quantity={quantity}
             amount={sum}
-            onRemove={() => {}}
+            onRemove={() => {
+              dispatch(cartActions.removeFromCart(key));
+            }}
           />
         )}
       />

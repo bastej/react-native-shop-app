@@ -1,4 +1,4 @@
-import { ADD_TO_CART } from "../actions/cart";
+import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
 import CartItem from "../../models/cart-item";
 const initialState = {
   items: {},
@@ -40,6 +40,33 @@ const reducer = (state = initialState, action) => {
           [productId]: currentProduct,
         },
         totalAmount: state.totalAmount + productPrice,
+      };
+    }
+    case REMOVE_FROM_CART: {
+      const currProductId = action.payload.productId;
+      console.log("currProductId: ", currProductId);
+      const selectedCartItem = state.items[currProductId];
+
+      const currQuantity = selectedCartItem.quantity;
+
+      let updatedCartItems;
+      if (currQuantity > 1) {
+        const updatedCartItem = new CartItem(
+          currProductId,
+          selectedCartItem.quantity - 1,
+          selectedCartItem.productPrice,
+          selectedCartItem.productTitle,
+          selectedCartItem.sum - selectedCartItem.productPrice
+        );
+        updatedCartItems = { ...state.items, [currProductId]: updatedCartItem };
+      } else {
+        updatedCartItems = { ...state.items };
+        delete updatedCartItems[currProductId];
+      }
+      return {
+        ...state,
+        items: updatedCartItems,
+        totalAmount: state.totalAmount - selectedCartItem.productPrice,
       };
     }
   }
