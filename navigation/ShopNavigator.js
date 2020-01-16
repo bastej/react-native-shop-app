@@ -1,10 +1,28 @@
+import React from "react";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
+import { createDrawerNavigator } from "react-navigation-drawer";
+import { Ionicons } from "@expo/vector-icons";
 
 import ProductsOverviewScreen from "../screens/shop/ProductsOverviewScreen";
 import ProductDetailScreen from "../screens/shop/ProductDetailScreen";
 import CartScreen from "../screens/shop/CartScreen";
+import OrdersScreen from "../screens/shop/OrdersScreen";
 import Colors from "../constants/colors";
+import { Platform } from "react-native";
+
+const defaultNavigationOptions = {
+  headerStyle: {
+    backgroundColor: Colors.red,
+  },
+  headerTintColor: Colors.navyBlue,
+  headerTitleStyle: {
+    fontFamily: "open-sans-bold",
+  },
+  headerBackTitleStyle: {
+    fontFamily: "open-sans",
+  },
+};
 
 const ProductNavigator = createStackNavigator(
   {
@@ -13,22 +31,53 @@ const ProductNavigator = createStackNavigator(
     Cart: CartScreen,
   },
   {
-    defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: Colors.red,
-      },
-      headerTintColor: Colors.navyBlue,
-      headerTitleStyle: {
-        fontFamily: "open-sans-bold",
-      },
-      headerBackTitleStyle: {
-        fontFamily: "open-sans",
-      },
+    navigationOptions: {
+      drawerIcon: drawerConfig => (
+        <Ionicons
+          name={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+          size={23}
+          color={drawerConfig.tintColor}
+        />
+      ),
     },
+    defaultNavigationOptions,
     cardStyle: {
       backgroundColor: Colors.navyBlue,
     },
   }
 );
 
-export default createAppContainer(ProductNavigator);
+const OrdersNavigator = createStackNavigator(
+  {
+    Orders: OrdersScreen,
+  },
+  {
+    navigationOptions: {
+      drawerIcon: drawerConfig => (
+        <Ionicons
+          name={Platform.OS === "android" ? "md-create" : "ios-create"}
+          size={23}
+          color={drawerConfig.tintColor}
+        />
+      ),
+    },
+    defaultNavigationOptions,
+  }
+);
+
+const ShopNavigator = createDrawerNavigator(
+  {
+    Products: ProductNavigator,
+    Orders: OrdersNavigator,
+  },
+  {
+    contentOptions: {
+      activeTintColor: Colors.navyBlue,
+      activeBackgroundColor: Colors.lightBlue,
+      inactiveTintColor: "white",
+    },
+    drawerBackgroundColor: Colors.navyBlue,
+  }
+);
+
+export default createAppContainer(ShopNavigator);
