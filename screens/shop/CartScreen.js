@@ -7,13 +7,13 @@ import { useSelector } from "react-redux";
 
 import PlainText from "../../components/PlainText";
 import Colors from "../../constants/colors";
+import CartItem from "../../components/shop/CartItem";
 
 const CartScreen = props => {
   const cartTotalAmount = useSelector(state => state.cart.totalAmount);
   const cartItems = useSelector(state => {
     // transforming into array with lodash
     const itemsArray = map(state.cart.items, item => item);
-    console.log(itemsArray);
     return itemsArray;
   });
 
@@ -32,7 +32,17 @@ const CartScreen = props => {
           disabled={cartItems.length === 0}
         />
       </View>
-      <FlatList data={cartItems} renderItem={() => {}} />
+      <FlatList
+        data={cartItems}
+        renderItem={({ item: { quantity, productTitle, sum } }) => (
+          <CartItem
+            title={productTitle}
+            quantity={quantity}
+            amount={sum}
+            onRemove={() => {}}
+          />
+        )}
+      />
     </View>
   );
 };
