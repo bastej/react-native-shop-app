@@ -14,9 +14,7 @@ const CartScreen = props => {
   const cartTotalAmount = useSelector(state => state.cart.totalAmount);
   const cartItems = useSelector(state => {
     // transforming into array with lodash
-    const itemsArray = map(state.cart.items, item => item).sort(
-      (a, b) => a.key > b.key
-    );
+    const itemsArray = map(state.cart.items, item => item);
     return itemsArray;
   });
 

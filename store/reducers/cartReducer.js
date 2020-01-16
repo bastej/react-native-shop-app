@@ -1,3 +1,5 @@
+import omit from "lodash/omit";
+
 import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
 import CartItem from "../../models/cart-item";
 const initialState = {
@@ -33,18 +35,17 @@ const reducer = (state = initialState, action) => {
           productPrice
         );
       }
+      const tempStoreCopy = state.items;
+      tempStoreCopy[productId] = currentProduct;
+
       return {
         ...state,
-        items: {
-          ...state.items,
-          [productId]: currentProduct,
-        },
+        items: tempStoreCopy,
         totalAmount: state.totalAmount + productPrice,
       };
     }
     case REMOVE_FROM_CART: {
       const currProductId = action.payload.productId;
-      console.log("currProductId: ", currProductId);
       const selectedCartItem = state.items[currProductId];
 
       const currQuantity = selectedCartItem.quantity;
@@ -58,10 +59,12 @@ const reducer = (state = initialState, action) => {
           selectedCartItem.productTitle,
           selectedCartItem.sum - selectedCartItem.productPrice
         );
-        updatedCartItems = { ...state.items, [currProductId]: updatedCartItem };
+        const tempStoreCopy = state.items;
+        tempStoreCopy[currProductId] = updatedCartItem;
+        updatedCartItems = tempStoreCopy;
       } else {
-        updatedCartItems = { ...state.items };
-        delete updatedCartItems[currProductId];
+        const tempStoreCopy = state.items;
+        updatedCartItems = omit(tempStoreCopy, currProductId);
       }
       return {
         ...state,
