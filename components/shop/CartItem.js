@@ -5,7 +5,7 @@ import PlainText from "../PlainText";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/colors";
 
-const CartItem = ({ quantity, title, amount, onRemove }) => {
+const CartItem = ({ quantity, title, amount, onRemove, hideDeleteBtn }) => {
   return (
     <View style={styles.cartItem}>
       <View style={styles.itemData}>
@@ -20,13 +20,15 @@ const CartItem = ({ quantity, title, amount, onRemove }) => {
         <PlainText style={styles.itemDetails}>
           {amount && amount.toFixed(2)}
         </PlainText>
-        <TouchableOpacity onPress={onRemove} style={styles.deleteBtn}>
-          <Ionicons
-            name={Platform.OS === "android" ? "md-trash" : "ios-trash"}
-            size={16}
-            color="red"
-          />
-        </TouchableOpacity>
+        {!hideDeleteBtn && (
+          <TouchableOpacity onPress={onRemove} style={styles.deleteBtn}>
+            <Ionicons
+              name={Platform.OS === "android" ? "md-trash" : "ios-trash"}
+              size={16}
+              color="red"
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
