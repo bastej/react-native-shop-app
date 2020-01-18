@@ -1,7 +1,9 @@
 import omit from "lodash/omit";
 
 import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
+import { ADD_ORDER } from "../actions/orders";
 import CartItem from "../../models/cart-item";
+
 const initialState = {
   items: {},
   totalAmount: 0,
@@ -35,7 +37,7 @@ const reducer = (state = initialState, action) => {
           productPrice
         );
       }
-      const tempStoreCopy = state.items;
+      const tempStoreCopy = { ...state.items };
       tempStoreCopy[productId] = currentProduct;
 
       return {
@@ -59,11 +61,11 @@ const reducer = (state = initialState, action) => {
           selectedCartItem.productTitle,
           selectedCartItem.sum - selectedCartItem.productPrice
         );
-        const tempStoreCopy = state.items;
+        const tempStoreCopy = { ...state.items };
         tempStoreCopy[currProductId] = updatedCartItem;
         updatedCartItems = tempStoreCopy;
       } else {
-        const tempStoreCopy = state.items;
+        const tempStoreCopy = { ...state.items };
         updatedCartItems = omit(tempStoreCopy, currProductId);
       }
       return {
@@ -71,6 +73,9 @@ const reducer = (state = initialState, action) => {
         items: updatedCartItems,
         totalAmount: state.totalAmount - selectedCartItem.productPrice,
       };
+    }
+    case ADD_ORDER: {
+      return initialState;
     }
   }
   return state;
