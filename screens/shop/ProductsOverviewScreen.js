@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, Platform } from "react-native";
+import { FlatList, Platform, Button } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -7,10 +7,21 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import ProductItem from "../../components/shop/ProductItem";
 import * as cartActions from "../../store/actions/cart";
 import HeaderButton from "../../components/UI/HeaderButton";
+import Colors from "../../constants/Colors";
 
 const ProductsOverviewScreen = props => {
   const products = useSelector(({ products }) => products.allProducts);
   const dispatch = useDispatch();
+
+  const selectItemHandler = (id, title) => {
+    props.navigation.navigate({
+      routeName: "ProductDetail",
+      params: {
+        productId: id,
+        productTitle: title,
+      },
+    });
+  };
 
   return (
     <FlatList
@@ -21,19 +32,25 @@ const ProductsOverviewScreen = props => {
           title={itemData.item.title}
           price={itemData.item.price}
           image={itemData.item.imageUrl}
-          onViewDetail={() =>
-            props.navigation.navigate({
-              routeName: "ProductDetail",
-              params: {
-                productId: itemData.item.id,
-                productTitle: itemData.item.title,
-              },
-            })
-          }
-          onAddToCart={() => {
-            dispatch(cartActions.addToCart(itemData.item));
+          onSelect={() => {
+            selectItemHandler(itemData.item.id, itemData.item.title);
           }}
-        />
+        >
+          <Button
+            color={Colors.lightBlue}
+            title="View Details"
+            onPress={() => {
+              selectItemHandler(itemData.item.id, itemData.item.title);
+            }}
+          />
+          <Button
+            color={Colors.lightBlue}
+            title="To Cart"
+            onPress={() => {
+              dispatch(cartActions.addToCart(itemData.item));
+            }}
+          />
+        </ProductItem>
       )}
     />
   );

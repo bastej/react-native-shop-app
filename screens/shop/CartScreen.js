@@ -6,7 +6,7 @@ import { View, FlatList, Button, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
 import PlainText from "../../components/PlainText";
-import Colors from "../../constants/colors";
+import Colors from "../../constants/Colors";
 import CartItem from "../../components/shop/CartItem";
 import * as cartActions from "../../store/actions/cart";
 import * as ordersActions from "../../store/actions/orders";

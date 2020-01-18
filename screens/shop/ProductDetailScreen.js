@@ -5,7 +5,7 @@ import PlainText from "../../components/PlainText";
 import { useSelector, useDispatch } from "react-redux";
 import * as cartActions from "../../store/actions/cart";
 
-import Colors from "../../constants/colors";
+import Colors from "../../constants/Colors";
 
 const ProductDetailScreen = props => {
   const productId = props.navigation.getParam("productId");

@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import PlainText from "../PlainText";
 
 import { Ionicons } from "@expo/vector-icons";
-import Colors from "../../constants/colors";
+import Colors from "../../constants/Colors";
 
 const CartItem = ({ quantity, title, amount, onRemove, hideDeleteBtn }) => {
   return (

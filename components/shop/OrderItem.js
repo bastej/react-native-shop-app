@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Button, StyleSheet } from "react-native";
 import PlainText from "../PlainText";
-import Colors from "../../constants/colors";
+import Colors from "../../constants/Colors";
 import CartItem from "./CartItem";
 
 const OrderItem = props => {
