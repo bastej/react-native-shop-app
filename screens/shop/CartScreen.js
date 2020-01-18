@@ -27,7 +27,7 @@ const CartScreen = props => {
         <PlainText style={styles.summaryText}>
           Total:{" "}
           <PlainText style={styles.amount}>
-            ${cartTotalAmount.toFixed(2)}
+            ${Math.round(cartTotalAmount.toFixed(2) * 100) / 100}
           </PlainText>
         </PlainText>
         <Button
