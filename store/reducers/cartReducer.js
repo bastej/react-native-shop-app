@@ -3,6 +3,7 @@ import omit from "lodash/omit";
 import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
 import { ADD_ORDER } from "../actions/orders";
 import CartItem from "../../models/cart-item";
+import { DELETE_PRODUCT } from "../actions/products";
 
 const initialState = {
   items: {},
@@ -76,6 +77,21 @@ const reducer = (state = initialState, action) => {
     }
     case ADD_ORDER: {
       return initialState;
+    }
+    case DELETE_PRODUCT: {
+      const itemId = action.payload.id;
+
+      if (!state.items[itemId]) return state;
+
+      const itemTotal = state.items[itemId].sum;
+
+      const updatedItems = omit(state.items, itemId);
+
+      return {
+        ...state,
+        items: updatedItems,
+        totalAmount: state.totalAmount - itemTotal,
+      };
     }
   }
   return state;
