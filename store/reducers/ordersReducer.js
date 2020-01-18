@@ -13,7 +13,7 @@ const reducer = (state = initialState, action) => {
         new Date().toString(),
         cartItems,
         totalAmount,
-        new Date().toLocaleString()
+        new Date()
       );
 
       return {
