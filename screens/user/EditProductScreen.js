@@ -29,7 +29,6 @@ const EditProductScreen = props => {
 
   const submitHandler = useCallback(() => {
     if (editedProduct) {
-      alert(1);
       dispatch(
         productsActions.updateProduct(productId, title, imageUrl, description)
       );
