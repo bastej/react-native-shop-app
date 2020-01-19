@@ -3,12 +3,12 @@ import {
   View,
   Image,
   StyleSheet,
-  Button,
   TouchableOpacity,
   TouchableNativeFeedback,
   Platform,
 } from "react-native";
 import PlainText from "../PlainText";
+import Card from "../UI/Card";
 import Colors from "../../constants/Colors";
 
 const ProductItem = ({
@@ -25,7 +25,7 @@ const ProductItem = ({
     TouchableComp = TouchableNativeFeedback;
   }
   return (
-    <View style={styles.product}>
+    <Card style={styles.product}>
       <View style={styles.touchableContainer}>
         <TouchableComp onPress={onSelect} useForeground>
           <View>
@@ -42,21 +42,12 @@ const ProductItem = ({
           </View>
         </TouchableComp>
       </View>
-    </View>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
   product: {
-    shadowColor: "white",
-    shadowOpacity: 0.5,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5,
-    borderWidth: 1,
-    borderColor: "white",
-    borderRadius: 10,
-    backgroundColor: Colors.navyBlue,
     height: 300,
     margin: 20,
     overflow: "hidden",
