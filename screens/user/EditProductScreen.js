@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useReducer } from "react";
 import { View, StyleSheet, Platform, Alert } from "react-native";
-import { ScrollView, TextInput } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from "react-redux";
 
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import HeaderButton from "../../components/UI/HeaderButton";
-
-import PlainText from "../../components/PlainText";
-import Colors from "../../constants/Colors";
+import Input from "../../components/UI/Input";
 
 import * as productsActions from "../../store/actions/products";
 
@@ -87,90 +85,79 @@ const EditProductScreen = props => {
     props.navigation.setParams({ submit: submitHandler });
   }, [submitHandler]);
 
-  const textChangeHandler = (name, value) => {
-    let isValid = false;
-    if (value.trim().length > 0) {
-      isValid = true;
-    }
-    dispatchFormState({
-      type: FORM_INPUT_UPDATE,
-      value,
-      isValid,
-      name,
-    });
-  };
+  // below method's logic doesn't change so useCallback has been used
+  // to avoid unnecessary method rebuild
+  const inputChangeHandler = useCallback(
+    (name, value, isValid) => {
+      dispatchFormState({
+        type: FORM_INPUT_UPDATE,
+        value,
+        isValid,
+        name,
+      });
+    },
+    [dispatchFormState]
+  );
 
   const { title, imageUrl, description, price } = formState.inputValues;
 
   return (
     <ScrollView>
       <View style={styles.form}>
-        <View style={styles.formItem}>
-          <PlainText textWeight="bold" style={styles.label}>
-            Title
-          </PlainText>
-          <TextInput
-            style={styles.input}
-            value={title}
-            onChangeText={value => textChangeHandler("title", value)}
-            autoCapitalize="sentences"
-            autoCorrect
-            returnKeyType="next"
-          />
-          {!title && (
-            <PlainText style={styles.errorMessage}>
-              Please enter a valid title
-            </PlainText>
-          )}
-        </View>
-        <View style={styles.formItem}>
-          <PlainText textWeight="bold" style={styles.label}>
-            Image URL
-          </PlainText>
-          <TextInput
-            style={styles.input}
-            value={imageUrl}
-            onChangeText={value => textChangeHandler("imageUrl", value)}
-          />
-          {!imageUrl && (
-            <PlainText style={styles.errorMessage}>
-              Please enter a image url
-            </PlainText>
-          )}
-        </View>
+        <Input
+          label="Title"
+          name="title"
+          value={title}
+          errorMessage="Please enter a valid title"
+          autoCapitalize="sentences"
+          autoCorrect
+          returnKeyType="next"
+          onInputChange={inputChangeHandler}
+          initialValue={title}
+          initiallyValid={!!title}
+          required
+        />
+        <Input
+          label="Image Url"
+          name="imageUrl"
+          value={imageUrl}
+          errorMessage="Please enter a image url"
+          returnKeyType="next"
+          onInputChange={inputChangeHandler}
+          initialValue={imageUrl}
+          initiallyValid={!!imageUrl}
+          required
+        />
         {editedProduct ? null : (
-          <View style={styles.formItem}>
-            <PlainText textWeight="bold" style={styles.label}>
-              Price
-            </PlainText>
-            <TextInput
-              style={styles.input}
-              value={price}
-              onChangeText={value => textChangeHandler("price", value)}
-              keyboardType="decimal-pad"
-            />
-            {!price && (
-              <PlainText style={styles.errorMessage}>
-                Please enter a valid price
-              </PlainText>
-            )}
-          </View>
-        )}
-        <View style={styles.formItem}>
-          <PlainText textWeight="bold" style={styles.label}>
-            Description
-          </PlainText>
-          <TextInput
-            style={styles.input}
-            value={description}
-            onChangeText={value => textChangeHandler("description", value)}
+          <Input
+            label="Price"
+            name="price"
+            value={price}
+            errorMessage="Please enter a valid price"
+            returnKeyType="next"
+            onInputChange={inputChangeHandler}
+            keyboardType="decimal-pad"
+            required
+            min={0.1}
           />
-          {!description && (
-            <PlainText style={styles.errorMessage}>
-              Please enter a valid description
-            </PlainText>
-          )}
-        </View>
+        )}
+        <Input
+          label="Description"
+          name="description"
+          value={description}
+          errorMessage="Please enter a valid description"
+          returnKeyType="next"
+          onInputChange={inputChangeHandler}
+          autoCapitalize="sentences"
+          autoCorrect
+          multiline
+          // props works just on android
+          numberOfLines={3}
+          initialValue={description}
+          initiallyValid={!!description}
+          required
+          minLength={5}
+        />
       </View>
     </ScrollView>
   );
@@ -199,21 +186,6 @@ EditProductScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
   form: {
     margin: 20,
-  },
-  formItem: {
-    width: "100%",
-  },
-  label: { color: Colors.lightBlue, marginVertical: 8 },
-  input: {
-    paddingHorizontal: 2,
-    paddingVertical: 5,
-    borderBottomColor: "white",
-    borderBottomWidth: 1,
-    color: "white",
-  },
-  errorMessage: {
-    color: Colors.red,
-    fontSize: 14,
   },
 });
 
