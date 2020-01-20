@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, StyleSheet, Platform } from "react-native";
+import { View, StyleSheet, Platform, Alert } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -19,6 +19,8 @@ const EditProductScreen = props => {
   const dispatch = useDispatch();
 
   const [title, setTitle] = useState(editedProduct ? editedProduct.title : "");
+  const [isTitleValid, setIsTitleValid] = useState(false);
+
   const [imageUrl, setImageUrl] = useState(
     editedProduct ? editedProduct.imageUrl : ""
   );
@@ -28,6 +30,12 @@ const EditProductScreen = props => {
   );
 
   const submitHandler = useCallback(() => {
+    if (!isTitleValid) {
+      Alert.alert("Wrong input!", "Please check the errors in the form", [
+        { text: "Okay" },
+      ]);
+      return;
+    }
     if (editedProduct) {
       dispatch(
         productsActions.updateProduct(productId, title, imageUrl, description)
@@ -44,6 +52,15 @@ const EditProductScreen = props => {
     props.navigation.setParams({ submit: submitHandler });
   }, [submitHandler]);
 
+  const titleChangeHandler = text => {
+    if (text.trim().length === 0) {
+      setIsTitleValid(false);
+    } else {
+      setIsTitleValid(true);
+    }
+    setTitle(text);
+  };
+
   return (
     <ScrollView>
       <View style={styles.form}>
@@ -54,8 +71,16 @@ const EditProductScreen = props => {
           <TextInput
             style={styles.input}
             value={title}
-            onChangeText={text => setTitle(text)}
+            onChangeText={titleChangeHandler}
+            autoCapitalize="sentences"
+            autoCorrect
+            returnKeyType="next"
           />
+          {!isTitleValid && (
+            <PlainText style={styles.errorMessage}>
+              Please enter a valid title
+            </PlainText>
+          )}
         </View>
         <View style={styles.formItem}>
           <PlainText textWeight="bold" style={styles.label}>
@@ -76,6 +101,7 @@ const EditProductScreen = props => {
               style={styles.input}
               value={price}
               onChangeText={text => setPrice(text)}
+              keyboardType="decimal-pad"
             />
           </View>
         )}
@@ -128,6 +154,10 @@ const styles = StyleSheet.create({
     borderBottomColor: "white",
     borderBottomWidth: 1,
     color: "white",
+  },
+  errorMessage: {
+    color: Colors.red,
+    fontSize: 14,
   },
 });
 
