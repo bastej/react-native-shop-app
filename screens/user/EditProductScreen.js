@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useReducer } from "react";
 import { View, StyleSheet, Platform, Alert } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,6 +11,34 @@ import Colors from "../../constants/Colors";
 
 import * as productsActions from "../../store/actions/products";
 
+const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
+
+const formReducer = (state, action) => {
+  if (action.type === FORM_INPUT_UPDATE) {
+    const updatedInputValues = {
+      ...state.inputValues,
+      [action.name]: action.value,
+    };
+    const updatedInputValidities = {
+      ...state.inputValidities,
+      [action.name]: action.isValid,
+    };
+
+    let updatedFormIsValid = true;
+    for (const key in updatedInputValidities) {
+      updatedFormIsValid = updatedFormIsValid && updatedInputValidities[key];
+    }
+
+    return {
+      ...state,
+      inputValues: updatedInputValues,
+      inputValidities: updatedInputValidities,
+      formIsValid: updatedFormIsValid,
+    };
+  }
+  return state;
+};
+
 const EditProductScreen = props => {
   const productId = props.navigation.getParam("productId");
   const editedProduct = useSelector(state =>
@@ -18,19 +46,26 @@ const EditProductScreen = props => {
   );
   const dispatch = useDispatch();
 
-  const [title, setTitle] = useState(editedProduct ? editedProduct.title : "");
-  const [isTitleValid, setIsTitleValid] = useState(false);
-
-  const [imageUrl, setImageUrl] = useState(
-    editedProduct ? editedProduct.imageUrl : ""
-  );
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState(
-    editedProduct ? editedProduct.description : ""
-  );
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      title: editedProduct ? editedProduct.title : "",
+      imageUrl: editedProduct ? editedProduct.imageUrl : "",
+      description: editedProduct ? editedProduct.description : "",
+      price: "",
+    },
+    inputValidities: {
+      title: editedProduct ? true : false,
+      imageUrl: editedProduct ? true : false,
+      description: editedProduct ? true : false,
+      price: editedProduct ? true : false,
+    },
+    formIsValid: editedProduct ? true : false,
+  });
 
   const submitHandler = useCallback(() => {
-    if (!isTitleValid) {
+    const { title, imageUrl, description, price } = formState.inputValues;
+
+    if (!formState.formIsValid) {
       Alert.alert("Wrong input!", "Please check the errors in the form", [
         { text: "Okay" },
       ]);
@@ -46,20 +81,26 @@ const EditProductScreen = props => {
       );
     }
     props.navigation.goBack();
-  }, [dispatch, productId, title, description, imageUrl, price]);
+  }, [dispatch, productId, formState]);
 
   useEffect(() => {
     props.navigation.setParams({ submit: submitHandler });
   }, [submitHandler]);
 
-  const titleChangeHandler = text => {
-    if (text.trim().length === 0) {
-      setIsTitleValid(false);
-    } else {
-      setIsTitleValid(true);
+  const textChangeHandler = (name, value) => {
+    let isValid = false;
+    if (value.trim().length > 0) {
+      isValid = true;
     }
-    setTitle(text);
+    dispatchFormState({
+      type: FORM_INPUT_UPDATE,
+      value,
+      isValid,
+      name,
+    });
   };
+
+  const { title, imageUrl, description, price } = formState.inputValues;
 
   return (
     <ScrollView>
@@ -71,12 +112,12 @@ const EditProductScreen = props => {
           <TextInput
             style={styles.input}
             value={title}
-            onChangeText={titleChangeHandler}
+            onChangeText={value => textChangeHandler("title", value)}
             autoCapitalize="sentences"
             autoCorrect
             returnKeyType="next"
           />
-          {!isTitleValid && (
+          {!title && (
             <PlainText style={styles.errorMessage}>
               Please enter a valid title
             </PlainText>
@@ -89,8 +130,13 @@ const EditProductScreen = props => {
           <TextInput
             style={styles.input}
             value={imageUrl}
-            onChangeText={text => setImageUrl(text)}
+            onChangeText={value => textChangeHandler("imageUrl", value)}
           />
+          {!imageUrl && (
+            <PlainText style={styles.errorMessage}>
+              Please enter a image url
+            </PlainText>
+          )}
         </View>
         {editedProduct ? null : (
           <View style={styles.formItem}>
@@ -100,9 +146,14 @@ const EditProductScreen = props => {
             <TextInput
               style={styles.input}
               value={price}
-              onChangeText={text => setPrice(text)}
+              onChangeText={value => textChangeHandler("price", value)}
               keyboardType="decimal-pad"
             />
+            {!price && (
+              <PlainText style={styles.errorMessage}>
+                Please enter a valid price
+              </PlainText>
+            )}
           </View>
         )}
         <View style={styles.formItem}>
@@ -112,8 +163,13 @@ const EditProductScreen = props => {
           <TextInput
             style={styles.input}
             value={description}
-            onChangeText={text => setDescription(text)}
+            onChangeText={value => textChangeHandler("description", value)}
           />
+          {!description && (
+            <PlainText style={styles.errorMessage}>
+              Please enter a valid description
+            </PlainText>
+          )}
         </View>
       </View>
     </ScrollView>
