@@ -1,5 +1,11 @@
 import React, { useCallback, useEffect, useReducer } from "react";
-import { View, StyleSheet, Platform, Alert } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Platform,
+  Alert,
+  KeyboardAvoidingView,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -12,27 +18,29 @@ import * as productsActions from "../../store/actions/products";
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 
 const formReducer = (state, action) => {
-  if (action.type === FORM_INPUT_UPDATE) {
-    const updatedInputValues = {
-      ...state.inputValues,
-      [action.name]: action.value,
-    };
-    const updatedInputValidities = {
-      ...state.inputValidities,
-      [action.name]: action.isValid,
-    };
+  switch (action.type) {
+    case FORM_INPUT_UPDATE: {
+      const updatedInputValues = {
+        ...state.inputValues,
+        [action.name]: action.value,
+      };
+      const updatedInputValidities = {
+        ...state.inputValidities,
+        [action.name]: action.isValid,
+      };
 
-    let updatedFormIsValid = true;
-    for (const key in updatedInputValidities) {
-      updatedFormIsValid = updatedFormIsValid && updatedInputValidities[key];
+      let updatedFormIsValid = true;
+      for (const key in updatedInputValidities) {
+        updatedFormIsValid = updatedFormIsValid && updatedInputValidities[key];
+      }
+
+      return {
+        ...state,
+        inputValues: updatedInputValues,
+        inputValidities: updatedInputValidities,
+        formIsValid: updatedFormIsValid,
+      };
     }
-
-    return {
-      ...state,
-      inputValues: updatedInputValues,
-      inputValidities: updatedInputValidities,
-      formIsValid: updatedFormIsValid,
-    };
   }
   return state;
 };
@@ -102,64 +110,71 @@ const EditProductScreen = props => {
   const { title, imageUrl, description, price } = formState.inputValues;
 
   return (
-    <ScrollView>
-      <View style={styles.form}>
-        <Input
-          label="Title"
-          name="title"
-          value={title}
-          errorMessage="Please enter a valid title"
-          autoCapitalize="sentences"
-          autoCorrect
-          returnKeyType="next"
-          onInputChange={inputChangeHandler}
-          initialValue={title}
-          initiallyValid={!!title}
-          required
-        />
-        <Input
-          label="Image Url"
-          name="imageUrl"
-          value={imageUrl}
-          errorMessage="Please enter a image url"
-          returnKeyType="next"
-          onInputChange={inputChangeHandler}
-          initialValue={imageUrl}
-          initiallyValid={!!imageUrl}
-          required
-        />
-        {editedProduct ? null : (
+    // TOFIX: on iOS keyboard still cover active input
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior="padding"
+      keyboardVerticalOffset={100}
+    >
+      <ScrollView>
+        <View style={styles.form}>
           <Input
-            label="Price"
-            name="price"
-            value={price}
-            errorMessage="Please enter a valid price"
+            label="Title"
+            name="title"
+            value={title}
+            errorMessage="Please enter a valid title"
+            autoCapitalize="sentences"
+            autoCorrect
             returnKeyType="next"
             onInputChange={inputChangeHandler}
-            keyboardType="decimal-pad"
+            initialValue={title}
+            initiallyValid={!!title}
             required
-            min={0.1}
           />
-        )}
-        <Input
-          label="Description"
-          name="description"
-          value={description}
-          errorMessage="Please enter a valid description"
-          returnKeyType="next"
-          onInputChange={inputChangeHandler}
-          autoCapitalize="sentences"
-          autoCorrect
-          multiline
-          // props works just on android
-          numberOfLines={3}
-          initialValue={description}
-          initiallyValid={!!description}
-          required
-          minLength={5}
-        />
-      </View>
-    </ScrollView>
+          <Input
+            label="Image Url"
+            name="imageUrl"
+            value={imageUrl}
+            errorMessage="Please enter a image url"
+            returnKeyType="next"
+            onInputChange={inputChangeHandler}
+            initialValue={imageUrl}
+            initiallyValid={!!imageUrl}
+            required
+          />
+          {editedProduct ? null : (
+            <Input
+              label="Price"
+              name="price"
+              value={price}
+              errorMessage="Please enter a valid price"
+              returnKeyType="next"
+              onInputChange={inputChangeHandler}
+              keyboardType="decimal-pad"
+              required
+              min={0.1}
+            />
+          )}
+          <Input
+            label="Description"
+            name="description"
+            value={description}
+            errorMessage="Please enter a valid description"
+            returnKeyType="next"
+            onInputChange={inputChangeHandler}
+            autoCapitalize="sentences"
+            autoCorrect
+            multiline
+            // props works just on android
+            numberOfLines={3}
+            initialValue={description}
+            initiallyValid={!!description}
+            required
+            minLength={5}
+          />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
