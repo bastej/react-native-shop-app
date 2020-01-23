@@ -3,14 +3,18 @@ import React, { useState } from "react";
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
 
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import rootReducer from "./store/reducers";
 import { composeWithDevTools } from "redux-devtools-extension";
+import thunk from "redux-thunk";
 
 import ShopNavigator from "./navigation/ShopNavigator";
 
-const store = createStore(rootReducer, composeWithDevTools());
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(thunk))
+);
 
 const fetchFonts = () => {
   return Font.loadAsync({
