@@ -8,13 +8,8 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_ORDER: {
-      const { cartItems, totalAmount } = action.payload;
-      const newOrder = new Order(
-        new Date().toString(),
-        cartItems,
-        totalAmount,
-        new Date()
-      );
+      const { id, cartItems, totalAmount, date } = action.payload;
+      const newOrder = new Order(id, cartItems, totalAmount, date);
 
       return {
         ...state,
