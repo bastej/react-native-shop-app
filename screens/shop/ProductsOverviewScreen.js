@@ -36,10 +36,14 @@ const ProductsOverviewScreen = props => {
     setIsRefreshing(false);
   }, [dispatch]);
 
-  useEffect(async () => {
+  const loadInitialProducts = async () => {
     setIsLoading(true);
     await loadProducts();
     setIsLoading(false);
+  };
+
+  useEffect(() => {
+    loadInitialProducts();
   }, [dispatch, loadProducts]);
 
   useEffect(() => {
