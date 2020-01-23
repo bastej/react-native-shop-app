@@ -3,6 +3,7 @@ import {
   DELETE_PRODUCT,
   CREATE_PRODUCT,
   UPDATE_PRODUCT,
+  SET_PRODUCTS,
 } from "../actions/products";
 import Product from "../../models/product";
 
@@ -47,7 +48,6 @@ const reducer = (state = initialState, action) => {
         prod => prod.id === id
       );
 
-      console.log(state.userProducts[userProductIndex].price);
       const updatedProduct = new Product(
         id,
         state.userProducts[userProductIndex].ownerId,
@@ -67,6 +67,15 @@ const reducer = (state = initialState, action) => {
         ...state,
         allProducts: updatedAllProducts,
         userProducts: updatedUserProducts,
+      };
+    }
+    case SET_PRODUCTS: {
+      return {
+        ...state,
+        allProducts: action.payload.products,
+        userProducts: action.payload.products.filter(
+          product => product.ownerId === "u1"
+        ),
       };
     }
   }
