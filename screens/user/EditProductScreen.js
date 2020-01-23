@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useReducer } from "react";
+import React, { useCallback, useEffect, useReducer, useState } from "react";
 import {
   View,
   StyleSheet,
   Platform,
   Alert,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,6 +15,7 @@ import HeaderButton from "../../components/UI/HeaderButton";
 import Input from "../../components/UI/Input";
 
 import * as productsActions from "../../store/actions/products";
+import Colors from "../../constants/Colors";
 
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 
@@ -46,6 +48,9 @@ const formReducer = (state, action) => {
 };
 
 const EditProductScreen = props => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
   const productId = props.navigation.getParam("productId");
   const editedProduct = useSelector(state =>
     state.products.allProducts.find(prod => prod.id === productId)
@@ -68,7 +73,13 @@ const EditProductScreen = props => {
     formIsValid: editedProduct ? true : false,
   });
 
-  const submitHandler = useCallback(() => {
+  useEffect(() => {
+    if (hasError) {
+      Alert.alert("An error occurred!");
+    }
+  }, [hasError]);
+
+  const submitHandler = useCallback(async () => {
     const { title, imageUrl, description, price } = formState.inputValues;
 
     if (!formState.formIsValid) {
@@ -77,16 +88,23 @@ const EditProductScreen = props => {
       ]);
       return;
     }
-    if (editedProduct) {
-      dispatch(
-        productsActions.updateProduct(productId, title, imageUrl, description)
-      );
-    } else {
-      dispatch(
-        productsActions.createProduct(title, imageUrl, description, +price)
-      );
+    setHasError(false);
+    setIsLoading(true);
+    try {
+      if (editedProduct) {
+        await dispatch(
+          productsActions.updateProduct(productId, title, imageUrl, description)
+        );
+      } else {
+        await dispatch(
+          productsActions.createProduct(title, imageUrl, description, +price)
+        );
+      }
+      props.navigation.goBack();
+    } catch {
+      setHasError(true);
     }
-    props.navigation.goBack();
+    setIsLoading(false);
   }, [dispatch, productId, formState]);
 
   useEffect(() => {
@@ -108,6 +126,14 @@ const EditProductScreen = props => {
   );
 
   const { title, imageUrl, description, price } = formState.inputValues;
+
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.lightBlue} />
+      </View>
+    );
+  }
 
   return (
     // TOFIX: on iOS keyboard still cover active input
@@ -202,6 +228,7 @@ const styles = StyleSheet.create({
   form: {
     margin: 20,
   },
+  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
 
 export default EditProductScreen;
