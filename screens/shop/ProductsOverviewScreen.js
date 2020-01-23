@@ -21,22 +21,25 @@ import PlainText from "../../components/PlainText";
 const ProductsOverviewScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const products = useSelector(({ products }) => products.allProducts);
   const dispatch = useDispatch();
 
   const loadProducts = useCallback(async () => {
     setHasError(false);
-    setIsLoading(true);
+    setIsRefreshing(true);
     try {
       await dispatch(productsActions.fetchProducts());
     } catch {
       setHasError(true);
     }
-    setIsLoading(false);
+    setIsRefreshing(false);
   }, [dispatch]);
 
-  useEffect(() => {
-    loadProducts();
+  useEffect(async () => {
+    setIsLoading(true);
+    await loadProducts();
+    setIsLoading(false);
   }, [dispatch, loadProducts]);
 
   useEffect(() => {
@@ -95,6 +98,8 @@ const ProductsOverviewScreen = props => {
 
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={isRefreshing}
       data={products}
       keyExtractor={item => item.id}
       renderItem={itemData => (
