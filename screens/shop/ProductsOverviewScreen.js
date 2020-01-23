@@ -1,5 +1,12 @@
-import React, { useEffect } from "react";
-import { FlatList, Platform, Button } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import {
+  FlatList,
+  Platform,
+  Button,
+  View,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -9,14 +16,28 @@ import * as cartActions from "../../store/actions/cart";
 import * as productsActions from "../../store/actions/products";
 import HeaderButton from "../../components/UI/HeaderButton";
 import Colors from "../../constants/Colors";
+import PlainText from "../../components/PlainText";
 
 const ProductsOverviewScreen = props => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const products = useSelector(({ products }) => products.allProducts);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(productsActions.fetchProducts());
+  const loadProducts = useCallback(async () => {
+    setHasError(false);
+    setIsLoading(true);
+    try {
+      await dispatch(productsActions.fetchProducts());
+    } catch {
+      setHasError(true);
+    }
+    setIsLoading(false);
   }, [dispatch]);
+
+  useEffect(() => {
+    loadProducts();
+  }, [dispatch, loadProducts]);
 
   const selectItemHandler = (id, title) => {
     props.navigation.navigate({
@@ -27,6 +48,39 @@ const ProductsOverviewScreen = props => {
       },
     });
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.lightBlue} />
+      </View>
+    );
+  }
+
+  if (!isLoading && products.length === 0) {
+    return (
+      <View style={styles.centered}>
+        <PlainText style={{ color: Colors.lightBlue }}>
+          No products found :(
+        </PlainText>
+      </View>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <View style={styles.centered}>
+        <PlainText style={{ color: Colors.red }}>
+          An error occurred :(
+        </PlainText>
+        <Button
+          title="Try again"
+          onPress={loadProducts}
+          color={Colors.lightBlue}
+        />
+      </View>
+    );
+  }
 
   return (
     <FlatList
@@ -84,5 +138,9 @@ ProductsOverviewScreen.navigationOptions = navData => {
     ),
   };
 };
+
+const styles = StyleSheet.create({
+  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
+});
 
 export default ProductsOverviewScreen;
