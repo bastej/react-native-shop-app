@@ -25,9 +25,9 @@ const reducer = (state = initialState, action) => {
       };
     }
     case CREATE_PRODUCT: {
-      const { title, imageUrl, price, description } = action.payload;
+      const { id, title, imageUrl, price, description } = action.payload;
       const newProduct = new Product(
-        new Date().toString(),
+        id,
         "u1",
         title,
         imageUrl,
