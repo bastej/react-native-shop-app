@@ -68,16 +68,6 @@ const ProductsOverviewScreen = props => {
     );
   }
 
-  if (!isLoading && products.length === 0) {
-    return (
-      <View style={styles.centered}>
-        <PlainText style={{ color: Colors.lightBlue }}>
-          No products found :(
-        </PlainText>
-      </View>
-    );
-  }
-
   if (hasError) {
     return (
       <View style={styles.centered}>
@@ -89,6 +79,16 @@ const ProductsOverviewScreen = props => {
           onPress={loadProducts}
           color={Colors.lightBlue}
         />
+      </View>
+    );
+  }
+
+  if (!isLoading && products.length === 0) {
+    return (
+      <View style={styles.centered}>
+        <PlainText style={{ color: Colors.lightBlue }}>
+          No products found :(
+        </PlainText>
       </View>
     );
   }
