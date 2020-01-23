@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer, useCallback } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -11,8 +11,73 @@ import { LinearGradient } from "expo-linear-gradient";
 import Card from "../../components/UI/Card";
 import Input from "../../components/UI/Input";
 import Colors from "../../constants/Colors";
+import { useDispatch } from "react-redux";
+
+import * as authActions from "../../store/actions/auth";
+
+const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
+
+const formReducer = (state, action) => {
+  switch (action.type) {
+    case FORM_INPUT_UPDATE: {
+      const updatedInputValues = {
+        ...state.inputValues,
+        [action.name]: action.value,
+      };
+      const updatedInputValidities = {
+        ...state.inputValidities,
+        [action.name]: action.isValid,
+      };
+
+      let updatedFormIsValid = true;
+      for (const key in updatedInputValidities) {
+        updatedFormIsValid = updatedFormIsValid && updatedInputValidities[key];
+      }
+
+      return {
+        ...state,
+        inputValues: updatedInputValues,
+        inputValidities: updatedInputValidities,
+        formIsValid: updatedFormIsValid,
+      };
+    }
+  }
+  return state;
+};
 
 const AuthScreen = props => {
+  const dispatch = useDispatch();
+
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      email: "",
+      password: "",
+    },
+    inputValidities: {
+      email: false,
+      password: false,
+    },
+    formIsValid: false,
+  });
+
+  const signUpHandler = () => {
+    const { email, password } = formState.inputValues;
+
+    dispatch(authActions.signUp(email, password));
+  };
+
+  const inputChangeHandler = useCallback(
+    (name, value, isValid) => {
+      dispatchFormState({
+        type: FORM_INPUT_UPDATE,
+        value,
+        isValid,
+        name,
+      });
+    },
+    [dispatchFormState]
+  );
+
   return (
     <KeyboardAvoidingView
       behavior="padding"
@@ -30,7 +95,7 @@ const AuthScreen = props => {
               email
               autoCapitalize="none"
               errorMessage="Please enter a valid email address"
-              onInputChange={() => {}}
+              onInputChange={inputChangeHandler}
               initialValue=""
             />
             <Input
@@ -42,7 +107,7 @@ const AuthScreen = props => {
               minLength={5}
               autoCapitalize="none"
               errorMessage="Please enter a valid password address"
-              onInputChange={() => {}}
+              onInputChange={inputChangeHandler}
               initialValue=""
             />
             <View style={styles.buttonContainer}>
@@ -50,9 +115,9 @@ const AuthScreen = props => {
             </View>
             <View style={styles.buttonContainer}>
               <Button
-                title="Switch to Sign Up"
+                title="Sign Up"
                 color={Colors.lightBlue}
-                onPress={() => {}}
+                onPress={signUpHandler}
               />
             </View>
           </ScrollView>
