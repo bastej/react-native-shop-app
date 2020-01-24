@@ -32,8 +32,6 @@ export const signUp = (email, password) => {
         throw new Error(errorMessage);
       }
 
-      console.log(resData);
-
       dispatch({
         type: SIGN_UP,
         payload: {
@@ -79,8 +77,6 @@ export const login = (email, password) => {
         }
         throw new Error(errorMessage);
       }
-
-      console.log(resData);
 
       dispatch({
         type: LOG_IN,

@@ -5,44 +5,51 @@ export const SET_ORDERS = "SET_ORDERS";
 
 export const addOrder = (cartItems, totalAmount) => {
   return async (dispatch, getState) => {
-    const token = getState().auth.token;
-    const date = new Date().toISOString();
-    const response = await fetch(
-      `https://rn-shopping-list.firebaseio.com/orders/u1.json?auth=${token}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          cartItems,
-          totalAmount,
-          date,
-        }),
+    try {
+      const { token, userId } = getState().auth;
+      const date = new Date();
+      const response = await fetch(
+        `https://rn-shopping-list.firebaseio.com/orders/${userId}.json?auth=${token}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            cartItems,
+            totalAmount,
+            date,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Something went wrong!");
       }
-    );
 
-    if (!response.ok) {
-      throw new Error("Something went wrong!");
+      const { name: firebaseId } = await response.json();
+
+      dispatch({
+        type: ADD_ORDER,
+        payload: { id: firebaseId, cartItems, totalAmount, date },
+      });
+    } catch (err) {
+      console.log(err);
     }
-
-    const { name: firebaseId } = await response.json();
-
-    dispatch({
-      type: ADD_ORDER,
-      payload: { id: firebaseId, cartItems, totalAmount, date },
-    });
   };
 };
 
 export const fetchOrders = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const { userId } = getState().auth;
     try {
       const response = await fetch(
-        "https://rn-shopping-list.firebaseio.com/orders/u1.json"
+        `https://rn-shopping-list.firebaseio.com/orders/${userId}.json`
       );
 
       if (!response.ok) {
+        alert(11);
+
         throw new Error("Something went wrong!");
       }
 

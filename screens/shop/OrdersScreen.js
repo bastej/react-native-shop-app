@@ -29,7 +29,7 @@ const OrdersScreen = props => {
     setIsLoading(true);
     try {
       await dispatch(ordersActions.fetchOrders());
-    } catch {
+    } catch (err) {
       setHasError(true);
     }
     setIsLoading(false);

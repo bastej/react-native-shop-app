@@ -1,4 +1,3 @@
-import PRODUCTS from "../../data/dummy-data";
 import {
   DELETE_PRODUCT,
   CREATE_PRODUCT,
@@ -8,8 +7,8 @@ import {
 import Product from "../../models/product";
 
 const initialState = {
-  allProducts: PRODUCTS,
-  userProducts: PRODUCTS.filter(product => product.ownerId === "u1"),
+  allProducts: [],
+  userProducts: [],
 };
 
 const reducer = (state = initialState, action) => {
@@ -26,10 +25,17 @@ const reducer = (state = initialState, action) => {
       };
     }
     case CREATE_PRODUCT: {
-      const { id, title, imageUrl, price, description } = action.payload;
+      const {
+        id,
+        title,
+        imageUrl,
+        price,
+        description,
+        ownerId,
+      } = action.payload;
       const newProduct = new Product(
         id,
-        "u1",
+        ownerId,
         title,
         imageUrl,
         description,
@@ -73,9 +79,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         allProducts: action.payload.products,
-        userProducts: action.payload.products.filter(
-          product => product.ownerId === "u1"
-        ),
+        userProducts: action.payload.userProducts,
       };
     }
   }

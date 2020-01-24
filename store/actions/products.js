@@ -7,7 +7,7 @@ export const SET_PRODUCTS = "SET_PRODUCTS";
 
 export const deleteProduct = id => {
   return async (dispatch, getState) => {
-    const token = getState().auth.token;
+    const { token } = getState().auth;
     const response = await fetch(
       `https://rn-shopping-list.firebaseio.com/products/${id}.json?auth=${token}`,
       {
@@ -28,7 +28,7 @@ export const deleteProduct = id => {
 
 export const createProduct = (title, imageUrl, description, price) => {
   return async (dispatch, getState) => {
-    const token = getState().auth.token;
+    const { token, userId } = getState().auth;
     const response = await fetch(
       `https://rn-shopping-list.firebaseio.com/products.json?auth=${token}`,
       {
@@ -36,7 +36,13 @@ export const createProduct = (title, imageUrl, description, price) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, imageUrl, description, price }),
+        body: JSON.stringify({
+          title,
+          imageUrl,
+          description,
+          price,
+          ownerId: userId,
+        }),
       }
     );
 
@@ -44,14 +50,21 @@ export const createProduct = (title, imageUrl, description, price) => {
 
     dispatch({
       type: CREATE_PRODUCT,
-      payload: { id: firebaseId, title, imageUrl, description, price },
+      payload: {
+        id: firebaseId,
+        title,
+        imageUrl,
+        description,
+        price,
+        ownerId: userId,
+      },
     });
   };
 };
 
 export const updateProduct = (id, title, imageUrl, description) => {
   return async (dispatch, getState) => {
-    const token = getState().auth.token;
+    const { token } = getState().auth;
     const response = await fetch(
       `https://rn-shopping-list.firebaseio.com/products/${id}.json?auth=${token}`,
       {
@@ -75,7 +88,8 @@ export const updateProduct = (id, title, imageUrl, description) => {
 };
 
 export const fetchProducts = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const { userId } = getState().auth;
     try {
       const response = await fetch(
         `https://rn-shopping-list.firebaseio.com/products.json`
@@ -92,7 +106,7 @@ export const fetchProducts = () => {
         loadedProducts.push(
           new Product(
             key,
-            "u1",
+            resData[key].ownerId,
             resData[key].title,
             resData[key].imageUrl,
             resData[key].description,
@@ -101,9 +115,13 @@ export const fetchProducts = () => {
         );
       }
 
+      const userProducts = loadedProducts.filter(
+        product => product.ownerId === userId
+      );
+
       dispatch({
         type: SET_PRODUCTS,
-        payload: { products: loadedProducts },
+        payload: { products: loadedProducts, userProducts },
       });
     } catch (err) {
       throw err;
