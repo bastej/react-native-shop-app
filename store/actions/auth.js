@@ -34,7 +34,13 @@ export const signUp = (email, password) => {
 
       console.log(resData);
 
-      dispatch({ type: SIGN_UP });
+      dispatch({
+        type: SIGN_UP,
+        payload: {
+          token: resData.idToken,
+          userId: resData.localId,
+        },
+      });
     } catch (err) {
       throw err;
     }
@@ -76,7 +82,13 @@ export const login = (email, password) => {
 
       console.log(resData);
 
-      dispatch({ type: LOG_IN });
+      dispatch({
+        type: LOG_IN,
+        payload: {
+          token: resData.idToken,
+          userId: resData.localId,
+        },
+      });
     } catch (err) {
       throw err;
     }
