@@ -82,11 +82,11 @@ const AuthScreen = props => {
       } else {
         await dispatch(authActions.login(email, password));
       }
+      props.navigation.navigate("Shop");
     } catch (err) {
       setError(err.message);
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const inputChangeHandler = useCallback(
