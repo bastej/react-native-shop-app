@@ -1,6 +1,8 @@
 import { AsyncStorage } from "react-native";
+import PlainText from "../../components/PlainText";
 
 export const AUTHENTICATE = "AUTHENTICATE";
+export const LOGOUT = "LOGOUT";
 
 export const signUp = (email, password) => {
   const apiKey = "AIzaSyDsKJ88GoXR8nGue1fgpIC4dao3uVT_avU";
@@ -103,5 +105,13 @@ export const authenticate = (token, userId) => {
   return {
     type: AUTHENTICATE,
     payload: { token, userId },
+  };
+};
+
+export const logout = () => {
+  AsyncStorage.removeItem("userData");
+
+  return {
+    type: LOGOUT,
   };
 };
