@@ -38,6 +38,9 @@ const defaultNavigationOptions = {
   headerBackTitleStyle: {
     fontFamily: "open-sans",
   },
+  cardStyle: {
+    backgroundColor: Colors.navyBlue,
+  },
 };
 
 const ProductNavigator = createStackNavigator(
@@ -57,9 +60,6 @@ const ProductNavigator = createStackNavigator(
       ),
     },
     defaultNavigationOptions,
-    cardStyle: {
-      backgroundColor: Colors.navyBlue,
-    },
   }
 );
 
@@ -78,9 +78,6 @@ const OrdersNavigator = createStackNavigator(
       ),
     },
     defaultNavigationOptions,
-    cardStyle: {
-      backgroundColor: Colors.navyBlue,
-    },
   }
 );
 
@@ -100,9 +97,6 @@ const AdminNavigator = createStackNavigator(
       ),
     },
     defaultNavigationOptions,
-    cardStyle: {
-      backgroundColor: Colors.navyBlue,
-    },
   }
 );
 
@@ -145,9 +139,6 @@ const AuthNavigator = createStackNavigator(
     Auth: AuthScreen,
   },
   {
-    cardStyle: {
-      backgroundColor: Colors.navyBlue,
-    },
     defaultNavigationOptions,
   }
 );
