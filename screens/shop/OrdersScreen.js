@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  FlatList,
-  Platform,
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  Button,
-} from "react-native";
+import { FlatList, Platform, StyleSheet, View, ActivityIndicator, Button } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -50,14 +43,8 @@ const OrdersScreen = props => {
   if (hasError) {
     return (
       <View style={styles.centered}>
-        <PlainText style={{ color: Colors.red }}>
-          An error occurred :(
-        </PlainText>
-        <Button
-          title="Try again"
-          onPress={loadOrders}
-          color={Colors.lightBlue}
-        />
+        <PlainText style={{ color: Colors.red }}>An error occurred :(</PlainText>
+        <Button title="Try again" onPress={loadOrders} color={Colors.lightBlue} />
       </View>
     );
   }
@@ -65,9 +52,7 @@ const OrdersScreen = props => {
   if (!isLoading && orders.length === 0) {
     return (
       <View style={styles.centered}>
-        <PlainText style={{ color: Colors.lightBlue }}>
-          No orders found :(
-        </PlainText>
+        <PlainText style={{ color: Colors.lightBlue }}>No orders found :(</PlainText>
       </View>
     );
   }
@@ -86,10 +71,10 @@ const OrdersScreen = props => {
   );
 };
 
-OrdersScreen.navigationOptions = navData => {
+export const OrdersScreenNavOptions = navData => {
   return {
     headerTitle: "Your Orders",
-    headerLeft: (
+    headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
           title="Menu"

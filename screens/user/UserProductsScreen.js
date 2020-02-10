@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  FlatList,
-  Platform,
-  Button,
-  Alert,
-  View,
-  StyleSheet,
-} from "react-native";
+import { FlatList, Platform, Button, Alert, View, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import HeaderButton from "../../components/UI/HeaderButton";
@@ -51,9 +44,7 @@ const UserProductsScreen = props => {
   if (hasError) {
     return (
       <View style={styles.centered}>
-        <PlainText style={{ color: Colors.red }}>
-          An error occurred :(
-        </PlainText>
+        <PlainText style={{ color: Colors.red }}>An error occurred :(</PlainText>
       </View>
     );
   }
@@ -61,9 +52,7 @@ const UserProductsScreen = props => {
   if (!isLoading && products.length === 0) {
     return (
       <View style={styles.centered}>
-        <PlainText style={{ color: Colors.lightBlue }}>
-          No products found :(
-        </PlainText>
+        <PlainText style={{ color: Colors.lightBlue }}>No products found :(</PlainText>
       </View>
     );
   }
@@ -100,10 +89,10 @@ const UserProductsScreen = props => {
   );
 };
 
-UserProductsScreen.navigationOptions = navData => {
+export const UserProductsScreenNavOptions = navData => {
   return {
     headerTitle: "Your Products",
-    headerLeft: (
+    headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
           title="Menu"
@@ -112,7 +101,7 @@ UserProductsScreen.navigationOptions = navData => {
         />
       </HeaderButtons>
     ),
-    headerRight: (
+    headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
           title="Add"

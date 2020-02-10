@@ -1,12 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  FlatList,
-  Platform,
-  Button,
-  View,
-  ActivityIndicator,
-  StyleSheet,
-} from "react-native";
+import { FlatList, Platform, Button, View, ActivityIndicator, StyleSheet } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -47,13 +40,10 @@ const ProductsOverviewScreen = props => {
   }, [dispatch, loadProducts]);
 
   useEffect(() => {
-    const willFocusSub = props.navigation.addListener(
-      "willFocus",
-      loadProducts
-    );
+    const unsubscribe = props.navigation.addListener("focus", loadProducts);
 
     return () => {
-      willFocusSub.remove();
+      unsubscribe();
     };
   }, [loadProducts]);
 
@@ -78,14 +68,8 @@ const ProductsOverviewScreen = props => {
   if (hasError) {
     return (
       <View style={styles.centered}>
-        <PlainText style={{ color: Colors.red }}>
-          An error occurred :(
-        </PlainText>
-        <Button
-          title="Try again"
-          onPress={loadProducts}
-          color={Colors.lightBlue}
-        />
+        <PlainText style={{ color: Colors.red }}>An error occurred :(</PlainText>
+        <Button title="Try again" onPress={loadProducts} color={Colors.lightBlue} />
       </View>
     );
   }
@@ -93,9 +77,7 @@ const ProductsOverviewScreen = props => {
   if (!isLoading && products.length === 0) {
     return (
       <View style={styles.centered}>
-        <PlainText style={{ color: Colors.lightBlue }}>
-          No products found :(
-        </PlainText>
+        <PlainText style={{ color: Colors.lightBlue }}>No products found :(</PlainText>
       </View>
     );
   }
@@ -135,10 +117,10 @@ const ProductsOverviewScreen = props => {
   );
 };
 
-ProductsOverviewScreen.navigationOptions = navData => {
+export const ProductsOverviewScreenNavOptions = navData => {
   return {
     headerTitle: "Products",
-    headerLeft: (
+    headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
           title="Menu"
@@ -147,7 +129,7 @@ ProductsOverviewScreen.navigationOptions = navData => {
         />
       </HeaderButtons>
     ),
-    headerRight: (
+    headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
           title="Cart"

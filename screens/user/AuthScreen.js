@@ -82,7 +82,7 @@ const AuthScreen = props => {
       } else {
         await dispatch(authActions.login(email, password));
       }
-      props.navigation.navigate("Shop");
+      // props.navigation.navigate("Shop");
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
@@ -102,11 +102,7 @@ const AuthScreen = props => {
   );
 
   return (
-    <KeyboardAvoidingView
-      behavior="padding"
-      keyboardVerticalOffset={50}
-      style={styles.screen}
-    >
+    <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={50} style={styles.screen}>
       <LinearGradient colors={["white", Colors.blue]} style={styles.gradient}>
         <Card style={styles.authContainer}>
           <ScrollView>
@@ -160,7 +156,7 @@ const AuthScreen = props => {
   );
 };
 
-AuthScreen.navigationOptions = {
+export const AuthScreenNavOptions = {
   headerTitle: "Authenticate",
 };
 

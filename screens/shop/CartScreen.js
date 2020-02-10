@@ -2,13 +2,7 @@ import React, { useState } from "react";
 
 import map from "lodash/map";
 
-import {
-  View,
-  FlatList,
-  Button,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
+import { View, FlatList, Button, StyleSheet, ActivityIndicator } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
 import PlainText from "../../components/PlainText";
@@ -73,7 +67,7 @@ const CartScreen = props => {
   );
 };
 
-CartScreen.navigationOptions = {
+export const CartScreenNavOptions = {
   headerTitle: "Your Cart",
 };
 

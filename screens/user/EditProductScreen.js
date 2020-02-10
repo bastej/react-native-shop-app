@@ -8,6 +8,9 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+
+import get from "lodash/get";
+
 import { useSelector, useDispatch } from "react-redux";
 
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -51,7 +54,7 @@ const EditProductScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const productId = props.navigation.getParam("productId");
+  const productId = get(props, "route.params.productId");
   const editedProduct = useSelector(state =>
     state.products.allProducts.find(prod => prod.id === productId)
   );
@@ -83,22 +86,16 @@ const EditProductScreen = props => {
     const { title, imageUrl, description, price } = formState.inputValues;
 
     if (!formState.formIsValid) {
-      Alert.alert("Wrong input!", "Please check the errors in the form", [
-        { text: "Okay" },
-      ]);
+      Alert.alert("Wrong input!", "Please check the errors in the form", [{ text: "Okay" }]);
       return;
     }
     setHasError(false);
     setIsLoading(true);
     try {
       if (editedProduct) {
-        await dispatch(
-          productsActions.updateProduct(productId, title, imageUrl, description)
-        );
+        await dispatch(productsActions.updateProduct(productId, title, imageUrl, description));
       } else {
-        await dispatch(
-          productsActions.createProduct(title, imageUrl, description, +price)
-        );
+        await dispatch(productsActions.createProduct(title, imageUrl, description, +price));
       }
       props.navigation.goBack();
     } catch {
@@ -108,7 +105,18 @@ const EditProductScreen = props => {
   }, [dispatch, productId, formState]);
 
   useEffect(() => {
-    props.navigation.setParams({ submit: submitHandler });
+    props.navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item
+            title={"Create"}
+            // title={isEditScreen ? "Save" : "Create"}
+            iconName={Platform.OS === "android" ? "md-checkmark" : "ios-checkmark"}
+            onPress={submitHandler}
+          />
+        </HeaderButtons>
+      ),
+    });
   }, [submitHandler]);
 
   // below method's logic doesn't change so useCallback has been used
@@ -137,11 +145,7 @@ const EditProductScreen = props => {
 
   return (
     // TOFIX: on iOS keyboard still cover active input
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior="padding"
-      keyboardVerticalOffset={100}
-    >
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={100}>
       <ScrollView>
         <View style={styles.form}>
           <Input
@@ -204,23 +208,11 @@ const EditProductScreen = props => {
   );
 };
 
-EditProductScreen.navigationOptions = navData => {
-  const isEditScreen = navData.navigation.getParam("productId");
-  const submitAction = navData.navigation.getParam("submit");
+export const EditProductScreenNavOptions = navData => {
+  const isEditScreen = get(navData, "route.params.productId");
 
   return {
     headerTitle: isEditScreen ? "Edit Product" : "Create Product",
-    headerRight: (
-      <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <Item
-          title={isEditScreen ? "Save" : "Create"}
-          iconName={
-            Platform.OS === "android" ? "md-checkmark" : "ios-checkmark"
-          }
-          onPress={submitAction}
-        />
-      </HeaderButtons>
-    ),
   };
 };
 

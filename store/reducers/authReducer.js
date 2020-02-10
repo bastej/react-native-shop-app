@@ -1,8 +1,9 @@
-import { AUTHENTICATE, LOGOUT } from "../actions/auth";
+import { AUTHENTICATE, LOGOUT, SET_DID_TRY_AL } from "../actions/auth";
 
 const initialState = {
   token: null,
   userId: null,
+  didTryAutoLogin: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -11,10 +12,20 @@ const reducer = (state = initialState, action) => {
       return {
         token: action.payload.token,
         userId: action.payload.userId,
+        didTryAutoLogin: true,
       };
     }
     case LOGOUT: {
-      return initialState;
+      return {
+        ...initialState,
+        didTryAutoLogin: true,
+      };
+    }
+    case SET_DID_TRY_AL: {
+      return {
+        ...state,
+        didTryAutoLogin: true,
+      };
     }
     default: {
       return state;

@@ -1,10 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  View,
-  ActivityIndicator,
-  StyleSheet,
-  AsyncStorage,
-} from "react-native";
+import { View, ActivityIndicator, StyleSheet, AsyncStorage } from "react-native";
 import { useDispatch } from "react-redux";
 
 import Colors from "../constants/Colors";
@@ -17,20 +12,22 @@ const StartupScreen = props => {
     const tryLogin = async () => {
       const jsonUserData = await AsyncStorage.getItem("userData");
       if (!jsonUserData) {
-        props.navigation.navigate("Auth");
+        // props.navigation.navigate("Auth");
+        dispatch(authActions.setDidTryAL());
         return;
       }
       const { token, userId, expiryDate } = JSON.parse(jsonUserData);
       const expirationDate = new Date(expiryDate);
 
       if (expirationDate <= new Date() || !token || !userId) {
-        props.navigation.navigate("Auth");
+        // props.navigation.navigate("Auth");
+        dispatch(authActions.setDidTryAL());
         return;
       }
 
       const expirationTime = expirationDate.getTime() - new Date().getTime();
 
-      props.navigation.navigate("Shop");
+      // props.navigation.navigate("Shop");
       dispatch(authActions.authenticate(token, userId, expirationTime));
     };
 

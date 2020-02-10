@@ -8,7 +8,7 @@ import * as cartActions from "../../store/actions/cart";
 import Colors from "../../constants/Colors";
 
 const ProductDetailScreen = props => {
-  const productId = props.navigation.getParam("productId");
+  const productId = props.route.params.productId;
   const selectedProduct = useSelector(state =>
     state.products.allProducts.find(prod => prod.id === productId)
   );
@@ -26,19 +26,15 @@ const ProductDetailScreen = props => {
           }}
         />
       </View>
-      <PlainText style={styles.price}>
-        {selectedProduct.price.toFixed(2)}
-      </PlainText>
-      <PlainText style={styles.description}>
-        {selectedProduct.description}
-      </PlainText>
+      <PlainText style={styles.price}>{selectedProduct.price.toFixed(2)}</PlainText>
+      <PlainText style={styles.description}>{selectedProduct.description}</PlainText>
     </ScrollView>
   );
 };
 
-ProductDetailScreen.navigationOptions = navData => {
+export const ProductDetailScreenNavOptions = navData => {
   return {
-    headerTitle: navData.navigation.getParam("productTitle"),
+    headerTitle: navData.route.params.productTitle,
   };
 };
 
