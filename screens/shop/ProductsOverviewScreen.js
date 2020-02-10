@@ -48,12 +48,9 @@ const ProductsOverviewScreen = props => {
   }, [loadProducts]);
 
   const selectItemHandler = (id, title) => {
-    props.navigation.navigate({
-      routeName: "ProductDetail",
-      params: {
-        productId: id,
-        productTitle: title,
-      },
+    props.navigation.navigate("ProductDetail", {
+      productId: id,
+      productTitle: title,
     });
   };
 
