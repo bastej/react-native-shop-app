@@ -3,6 +3,8 @@ import { AUTHENTICATE, LOGOUT, SET_DID_TRY_AL } from "../actions/auth";
 const initialState = {
   token: null,
   userId: null,
+  imageUrl: null,
+  userName: null,
   didTryAutoLogin: false,
 };
 
@@ -13,6 +15,8 @@ const reducer = (state = initialState, action) => {
         token: action.payload.token,
         userId: action.payload.userId,
         didTryAutoLogin: true,
+        imageUrl: action.payload.imageUrl,
+        userName: action.payload.userName,
       };
     }
     case LOGOUT: {

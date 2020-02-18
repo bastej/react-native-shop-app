@@ -7,15 +7,17 @@ import {
   View,
   ActivityIndicator,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useDispatch } from "react-redux";
 
 import Card from "../../components/UI/Card";
 import Input from "../../components/UI/Input";
 import Colors from "../../constants/Colors";
-import { useDispatch } from "react-redux";
 
 import * as authActions from "../../store/actions/auth";
+import PlainText from "../../components/PlainText";
 
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 
@@ -51,6 +53,7 @@ const AuthScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isSignUp, setIsSignUp] = useState(false);
+
   const dispatch = useDispatch();
 
   const [formState, dispatchFormState] = useReducer(formReducer, {
@@ -149,6 +152,16 @@ const AuthScreen = props => {
                 }}
               />
             </View>
+            <View style={styles.buttonContainer}>
+              <View style={styles.container}>
+                <TouchableOpacity
+                  style={styles.loginBtn}
+                  onPress={() => dispatch(authActions.facebookLogIn())}
+                >
+                  <PlainText style={{ color: "#fff" }}>Login with Facebook</PlainText>
+                </TouchableOpacity>
+              </View>
+            </View>
           </ScrollView>
         </Card>
       </LinearGradient>
@@ -176,6 +189,17 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
+  },
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loginBtn: {
+    backgroundColor: "#4267b2",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
   },
 });
 

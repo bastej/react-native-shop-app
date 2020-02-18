@@ -1,4 +1,8 @@
-import { AsyncStorage } from "react-native";
+import { AsyncStorage, Alert } from "react-native";
+
+import * as Facebook from "expo-facebook";
+
+import { fbAppID } from "../../env";
 
 export const AUTHENTICATE = "AUTHENTICATE";
 export const LOGOUT = "LOGOUT";
@@ -89,6 +93,33 @@ export const login = (email, password) => {
   };
 };
 
+export const facebookLogIn = () => async dispatch => {
+  await Facebook.initializeAsync(fbAppID);
+  try {
+    const { type, token, expires } = await Facebook.logInWithReadPermissionsAsync({
+      permissions: ["public_profile"],
+    });
+
+    if (type === "success") {
+      // Get the user's name using Facebook's Graph API
+      const responseJSON = await fetch(
+        `https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,picture.height(500)`
+      );
+      const { name, id, picture } = await responseJSON.json();
+
+      Alert.alert("Logged in!", `Hi ${name}!`);
+      const expiryTimeInMS = parseInt(expires) * 1000;
+      dispatch(authenticate(token, id, expiryTimeInMS, picture.data.url, name));
+      const expirationDate = new Date(new Date().getTime() + expiryTimeInMS);
+      saveDataToStorage(token, id, expirationDate);
+    } else {
+      // type === 'cancel'
+    }
+  } catch ({ message }) {
+    alert(`Facebook Login Error: ${message}`);
+  }
+};
+
 const saveDataToStorage = (token, userId, expirationDate) => {
   AsyncStorage.setItem(
     "userData",
@@ -100,10 +131,10 @@ const saveDataToStorage = (token, userId, expirationDate) => {
   );
 };
 
-export const authenticate = (token, userId, expiryDate) => {
+export const authenticate = (token, userId, expiryDate, imageUrl, userName) => {
   return dispatch => {
     dispatch(setLogoutTimer(expiryDate));
-    dispatch({ type: AUTHENTICATE, payload: { token, userId } });
+    dispatch({ type: AUTHENTICATE, payload: { token, userId, imageUrl, userName } });
   };
 };
 

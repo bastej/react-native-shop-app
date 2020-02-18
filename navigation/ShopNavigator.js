@@ -3,11 +3,12 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator, DrawerItemList } from "@react-navigation/drawer";
 
-import { Platform, Button, View, SafeAreaView } from "react-native";
+import { Platform, Button, View, SafeAreaView, Image } from "react-native";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Ionicons } from "@expo/vector-icons";
+import { ListItem } from "react-native-elements";
 
 import ProductsOverviewScreen, {
   ProductsOverviewScreenNavOptions,
@@ -161,6 +162,7 @@ const ShopDrawerNavigator = createDrawerNavigator();
 
 export const ShopNavigator = () => {
   const dispatch = useDispatch();
+  const { imageUrl, userName } = useSelector(state => state.auth);
 
   return (
     <ShopDrawerNavigator.Navigator
@@ -168,6 +170,17 @@ export const ShopNavigator = () => {
         return (
           <View style={{ flex: 1, paddingTop: 20 }}>
             <SafeAreaView forceInset={{ top: "always", horizontal: "never" }}>
+              {imageUrl && (
+                <ListItem
+                  leftAvatar={{
+                    title: userName,
+                    source: { uri: imageUrl },
+                  }}
+                  title={userName}
+                  titleStyle={{ color: "white" }}
+                  containerStyle={{ backgroundColor: "transparent" }}
+                />
+              )}
               <DrawerItemList {...props} />
               <Button
                 title="Logout"
