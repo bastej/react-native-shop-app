@@ -152,13 +152,21 @@ const AuthScreen = props => {
                 }}
               />
             </View>
-            <View style={styles.buttonContainer}>
+            <View>
               <View style={styles.container}>
                 <TouchableOpacity
-                  style={styles.loginBtn}
+                  style={{ ...styles.loginBtn, backgroundColor: "#4267b2" }}
                   onPress={() => dispatch(authActions.facebookLogIn())}
                 >
                   <PlainText style={{ color: "#fff" }}>Login with Facebook</PlainText>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.container}>
+                <TouchableOpacity
+                  style={{ ...styles.loginBtn, backgroundColor: "#d93025" }}
+                  onPress={() => dispatch(authActions.googleLogIn())}
+                >
+                  <PlainText style={{ color: "#fff" }}>Login with Google</PlainText>
                 </TouchableOpacity>
               </View>
             </View>
@@ -187,16 +195,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  buttonContainer: {
-    marginTop: 10,
-  },
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 10,
   },
   loginBtn: {
-    backgroundColor: "#4267b2",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,

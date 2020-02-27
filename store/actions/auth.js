@@ -1,6 +1,8 @@
 import { AsyncStorage, Alert } from "react-native";
 
 import * as Facebook from "expo-facebook";
+import * as Google from "expo-google-app-auth";
+import jwtDecode from "jwt-decode";
 
 import { fbAppID } from "../../env";
 
@@ -117,6 +119,30 @@ export const facebookLogIn = () => async dispatch => {
     }
   } catch ({ message }) {
     alert(`Facebook Login Error: ${message}`);
+  }
+};
+
+export const googleLogIn = () => async dispatch => {
+  try {
+    const { type, accessToken, user, idToken: token, ...rest } = await Google.logInAsync({
+      iosClientId: `101042562428-h59d4tr3ojp2hhaplu0gv67abulj38kk.apps.googleusercontent.com`,
+      androidClientId: `101042562428-qfhebh35omd3pbcvnrmd497dqh9fot0d.apps.googleusercontent.com`,
+      scopes: ["profile", "email"],
+    });
+
+    if (type === "success") {
+      const { name, exp: expires, picture: pictureUrl } = jwtDecode(token);
+
+      Alert.alert("Logged in!", `Hi ${name}!`);
+      const expiryTimeInMS = parseInt(expires) * 1000;
+      dispatch(authenticate(token, id, expiryTimeInMS, pictureUrl, name));
+      const expirationDate = new Date(new Date().getTime() + expiryTimeInMS);
+      saveDataToStorage(token, id, expirationDate);
+    } else {
+      // type === 'cancel'
+    }
+  } catch ({ message }) {
+    Alert.alert(`Google Login Error: ${message}`);
   }
 };
 
