@@ -34,7 +34,20 @@
       "package": "pl.sebastiansiatka.shop_app",
       "versionCode": 1
     },
-    "entryPoint": "node_modules/expo/AppEntry.js"
+    "entryPoint": "node_modules/expo/AppEntry.js",
+    "extra": {
+      "firebase": {
+        "apiKey": "AIzaSyDsKJ88GoXR8nGue1fgpIC4dao3uVT_avU",
+        "authDomain": "rn-shopping-list.firebaseapp.com",
+        "databaseURL": "https://rn-shopping-list.firebaseio.com",
+        "projectId": "rn-shopping-list",
+        "storageBucket": "gs://rn-shopping-list.appspot.com",
+        "messagingSenderId": "191342340304"
+      },
+      "facebook": {
+        "appId": "563784074208156"
+      }
+    }
   },
   "displayName": "React Native Shop App",
   "name": "rn_shop_app"

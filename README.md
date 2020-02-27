@@ -9,11 +9,11 @@ At the beginning app require sign up, or log in if account is already created. A
 
 # Features
 
-## Firebase authorization
+## Firebase authorization through
 
-## Login with Facebook
-
-## Login with Google
+### Firebase Auth
+### Facebook
+### Google
 
 ## Input handling
 

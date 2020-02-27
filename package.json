@@ -17,6 +17,7 @@
     "expo-facebook": "~8.0.0",
     "expo-google-app-auth": "^8.0.1",
     "expo-linear-gradient": "~8.0.0",
+    "firebase": "^7.9.1",
     "jwt-decode": "^2.2.0",
     "react": "16.9.0",
     "react-dom": "16.9.0",
