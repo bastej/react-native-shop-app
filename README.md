@@ -6,3 +6,15 @@ App containt two forms - create and edit product form. Forms using basic form va
 All data are stored in firebase realtime database.
 
 At the beginning app require sign up, or log in if account is already created. Authentication is stored and controled also by firebase. After auth token expired, user will be auto logged out (Authentication doesn't support token refreshing yet) 
+
+# Features
+
+## Firebase authorization
+
+## Login with Facebook
+
+## Login with Google
+
+## Input handling
+
+## Reloading on swipe down
