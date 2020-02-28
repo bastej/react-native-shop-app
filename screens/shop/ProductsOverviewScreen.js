@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { FlatList, Platform, Button, View, ActivityIndicator, StyleSheet } from "react-native";
+import {
+  FlatList,
+  Platform,
+  Button,
+  View,
+  ActivityIndicator,
+  StyleSheet,
+  RefreshControl,
+} from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -83,6 +91,16 @@ const ProductsOverviewScreen = props => {
     <FlatList
       onRefresh={loadProducts}
       refreshing={isRefreshing}
+      indicatorStyle="white"
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={loadProducts}
+          title="Pull to refresh"
+          tintColor="#fff"
+          titleColor="#fff"
+        />
+      }
       data={products}
       keyExtractor={item => item.id}
       renderItem={itemData => (
