@@ -145,65 +145,69 @@ const EditProductScreen = props => {
 
   return (
     // TOFIX: on iOS keyboard still cover active input
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={100}>
-      <ScrollView>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={80}>
+      <View style={styles.formContainer}>
         <View style={styles.form}>
-          <Input
-            label="Title"
-            name="title"
-            value={title}
-            errorMessage="Please enter a valid title"
-            autoCapitalize="sentences"
-            autoCorrect
-            returnKeyType="next"
-            onInputChange={inputChangeHandler}
-            initialValue={title}
-            initiallyValid={!!title}
-            required
-          />
-          <Input
-            label="Image Url"
-            name="imageUrl"
-            value={imageUrl}
-            errorMessage="Please enter a image url"
-            returnKeyType="next"
-            onInputChange={inputChangeHandler}
-            initialValue={imageUrl}
-            initiallyValid={!!imageUrl}
-            required
-          />
-          {editedProduct ? null : (
+          <ScrollView>
             <Input
-              label="Price"
-              name="price"
-              value={price}
-              errorMessage="Please enter a valid price"
+              label="Title"
+              name="title"
+              value={title}
+              errorMessage="Please enter a valid title"
+              autoCapitalize="sentences"
+              autoCorrect
               returnKeyType="next"
               onInputChange={inputChangeHandler}
-              keyboardType="decimal-pad"
+              initialValue={title}
+              initiallyValid={!!title}
               required
-              min={0.1}
             />
-          )}
-          <Input
-            label="Description"
-            name="description"
-            value={description}
-            errorMessage="Please enter a valid description"
-            returnKeyType="next"
-            onInputChange={inputChangeHandler}
-            autoCapitalize="sentences"
-            autoCorrect
-            multiline
-            // props works just on android
-            numberOfLines={3}
-            initialValue={description}
-            initiallyValid={!!description}
-            required
-            minLength={5}
-          />
+            <Input
+              label="Image Url"
+              name="imageUrl"
+              value={imageUrl}
+              errorMessage="Please enter a image url"
+              returnKeyType="next"
+              onInputChange={inputChangeHandler}
+              initialValue={imageUrl}
+              initiallyValid={!!imageUrl}
+              required
+            />
+            {editedProduct ? null : (
+              <Input
+                label="Price"
+                name="price"
+                value={price}
+                errorMessage="Please enter a valid price"
+                returnKeyType="next"
+                onInputChange={inputChangeHandler}
+                keyboardType="decimal-pad"
+                required
+                min={0.1}
+              />
+            )}
+            <Input
+              label="Description"
+              name="description"
+              value={description}
+              errorMessage="Please enter a valid description"
+              returnKeyType="next"
+              onInputChange={inputChangeHandler}
+              autoCapitalize="sentences"
+              autoCorrect
+              // way to fix trouble with scrolling to field on select if multiline prop equal true
+              scrollEnabled={false}
+              multiline
+              // props works just on android
+              numberOfLines={3}
+              initialValue={description}
+              initiallyValid={!!description}
+              required
+              minLength={5}
+            />
+          </ScrollView>
         </View>
-      </ScrollView>
+      </View>
     </KeyboardAvoidingView>
   );
 };
@@ -218,7 +222,11 @@ export const EditProductScreenNavOptions = navData => {
 
 const styles = StyleSheet.create({
   form: {
-    margin: 20,
+    width: "100%",
+    padding: 20,
+  },
+  formContainer: {
+    flex: 1,
   },
   centered: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
