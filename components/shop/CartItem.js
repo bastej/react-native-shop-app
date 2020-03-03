@@ -17,14 +17,16 @@ const CartItem = ({ quantity, title, amount, onRemove, hideDeleteBtn }) => {
         </PlainText>
       </View>
       <View style={styles.itemData}>
-        <PlainText style={styles.itemDetails}>
-          {amount && amount.toFixed(2)}
-        </PlainText>
+        <PlainText style={styles.itemDetails}>{amount && amount.toFixed(2)}</PlainText>
         {!hideDeleteBtn && (
-          <TouchableOpacity onPress={onRemove} style={styles.deleteBtn}>
+          <TouchableOpacity
+            onPress={onRemove}
+            style={styles.deleteBtn}
+            hitSlop={{ top: 20, right: 20, bottom: 20, left: 20 }}
+          >
             <Ionicons
               name={Platform.OS === "android" ? "md-trash" : "ios-trash"}
-              size={16}
+              size={18}
               color="red"
             />
           </TouchableOpacity>
